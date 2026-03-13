@@ -1,5 +1,7 @@
 package com.example.productcatlogservice.controllers;
 
+import com.example.productcatlogservice.exceptions.ProductAlreadyExistsException;
+import com.example.productcatlogservice.exceptions.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,5 +19,10 @@ public class ControllerAdvisor {
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<String> handleRuntimeException(RuntimeException exception) {
     return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({ProductAlreadyExistsException.class, ProductNotFoundException.class})
+    public ResponseEntity<String> handleProductException(Exception exception) {
+      return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
   }
 }

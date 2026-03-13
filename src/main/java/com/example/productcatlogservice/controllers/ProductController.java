@@ -2,6 +2,8 @@ package com.example.productcatlogservice.controllers;
 
 import com.example.productcatlogservice.dtos.CategoryDto;
 import com.example.productcatlogservice.dtos.ProductDto;
+import com.example.productcatlogservice.exceptions.ProductAlreadyExistsException;
+import com.example.productcatlogservice.exceptions.ProductNotFoundException;
 import com.example.productcatlogservice.models.Category;
 import com.example.productcatlogservice.models.Product;
 import com.example.productcatlogservice.services.IProductService;
@@ -9,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -18,7 +23,7 @@ public class ProductController {
   private IProductService productService;
 
   @GetMapping("/{id}")
-  public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
+  public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) throws ProductNotFoundException {
     if (id <= 0)
         throw new IllegalArgumentException("Please enter a valid product ID");
 
@@ -31,25 +36,44 @@ public class ProductController {
     return new ResponseEntity<>(productDto, HttpStatus.OK);
   }
 
-  @PostMapping()
-  public Product createProduct(@RequestBody Product product) {
-    product.setImageUrl("abc.com");
-    return product;
+  @PostMapping
+  public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) throws ProductAlreadyExistsException {
+    Product product = productService.addProduct(getProductFromProductDto(productDto));
+    return new ResponseEntity<>(getProductDtoFromProduct(product), HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<ProductDto> replaceProduct(@PathVariable Long id, @RequestBody ProductDto requestProductDto) {
+  public ResponseEntity<ProductDto> replaceProduct(@PathVariable Long id,
+                                                   @RequestBody ProductDto requestProductDto) throws ProductNotFoundException {
+
     if (id <= 0)
         throw new IllegalArgumentException("Please enter a valid product ID");
 
     Product inputProduct = getProductFromProductDto(requestProductDto);
-    Product replacedProduct = productService.replaceProductById(id, inputProduct);
+    Product replacedProduct = productService.replaceProduct(id, inputProduct);
 
     if (replacedProduct == null)
-      throw new RuntimeException("Product not found");
+      throw new ProductNotFoundException("Product with id " + id + " does not exist!");
 
     ProductDto productDto = getProductDtoFromProduct(replacedProduct);
     return new ResponseEntity<>(productDto, HttpStatus.OK);
+  }
+
+  @GetMapping
+  public ResponseEntity<List<ProductDto>> getAllProducts() {
+    List<Product> products = productService.getAllProducts();
+    List<ProductDto> productDtos = new ArrayList<>();
+
+    for (Product product : products)
+      productDtos.add(getProductDtoFromProduct(product));
+
+    return new ResponseEntity<>(productDtos, HttpStatus.OK);
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Boolean> deleteProductById(@PathVariable Long id) throws ProductNotFoundException {
+    Boolean hasDeleted = productService.deleteProduct(id);
+    return new ResponseEntity<>(hasDeleted, HttpStatus.OK);
   }
 
   private ProductDto getProductDtoFromProduct(Product product) {
@@ -62,8 +86,11 @@ public class ProductController {
     productDto.setImageUrl(product.getImageUrl());
 
     CategoryDto categoryDto = new CategoryDto();
+    categoryDto.setId(product.getCategory().getId());
     categoryDto.setName(product.getCategory().getName());
+    categoryDto.setDescription(product.getCategory().getDescription());
     productDto.setCategory(categoryDto);
+
     return productDto;
   }
 
@@ -75,7 +102,13 @@ public class ProductController {
     product.setImageUrl(productDto.getImageUrl());
     product.setPrice(productDto.getPrice());
     product.setQuantity(productDto.getQuantity());
-    product.setCategory(product.getCategory());
+
+    Category category = new Category();
+    category.setId(productDto.getCategory().getId());
+    category.setName(productDto.getCategory().getName());
+    category.setDescription(productDto.getCategory().getDescription());
+    product.setCategory(category);
+
     return product;
   }
 

@@ -12,7 +12,7 @@ import java.util.Date;
 public abstract class BaseModel {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+//  @GeneratedValue(strategy = GenerationType.IDENTITY)   // It will create a new category id every time a new product is added.
   private long id;
 
   private Date createdAt;
@@ -20,4 +20,10 @@ public abstract class BaseModel {
 
   @Enumerated(value = EnumType.STRING)
   private Status status;
+
+  public BaseModel() {
+    this.createdAt = new Date();
+    this.lastUpdatedAt = new Date();
+    this.status = Status.ACTIVE;
+  }
 }

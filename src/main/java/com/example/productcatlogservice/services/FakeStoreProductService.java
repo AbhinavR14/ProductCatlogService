@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.client.*;
 
+import java.util.List;
+
 @Service
 public class FakeStoreProductService implements IProductService{
   @Autowired
@@ -36,7 +38,12 @@ public class FakeStoreProductService implements IProductService{
   }
 
   @Override
-  public Product replaceProductById(long id, Product product) {
+  public Product addProduct(Product product) {
+    return null;
+  }
+
+  @Override
+  public Product replaceProduct(long id, Product product) {
     FakeStoreProductDto fakeStoreProductDto = getDtoFromProduct(product);
     ResponseEntity<FakeStoreProductDto> fakeStoreProductDtoResponseEntity = requestForEntity(
             HttpMethod.PUT, "https://fakestoreapi.com/products/{id}", fakeStoreProductDto, FakeStoreProductDto.class, id);
@@ -46,6 +53,16 @@ public class FakeStoreProductService implements IProductService{
       return getProductFromDto(fakeStoreProductDtoResponseEntity.getBody());
 
     return null;
+  }
+
+  @Override
+  public Boolean deleteProduct(long id) {
+    return false;
+  }
+
+  @Override
+  public List<Product> getAllProducts() {
+    return List.of();
   }
 
   public <T> ResponseEntity<T> requestForEntity(HttpMethod httpMethod, String url, @Nullable Object request, Class<T> responseType, Object... uriVariables) throws RestClientException {
