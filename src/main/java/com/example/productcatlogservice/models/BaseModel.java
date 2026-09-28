@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
 @Getter
-@Setter
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseModel {
 
   @Id
@@ -30,5 +31,9 @@ public abstract class BaseModel {
 
   public BaseModel() {
     this.status = Status.ACTIVE;
+  }
+
+  public void setId(long id) {
+    this.id = id;
   }
 }
