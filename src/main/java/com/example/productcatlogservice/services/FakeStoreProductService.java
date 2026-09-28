@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.client.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-@Service
+@Service("fakeStoreProductService")
 public class FakeStoreProductService implements IProductService{
   @Autowired
   private RestTemplateBuilder restTemplateBuilder;
@@ -22,10 +24,8 @@ public class FakeStoreProductService implements IProductService{
   @Override
   public Product getProductById(long id) {
     RestTemplate restTemplate = restTemplateBuilder.build();
-//    FakeStoreDto fakeStoreDto = restTemplate
-//                                  .getForObject("https://fakestoreapi.com/products/{id}",
-//                                                  FakeStoreDto.class,
-//                                                  id);
+//    FakeStoreDto fakeStoreDto = restTemplate.getForObject("https://fakestoreapi.com/products/{id}",
+//                                                  FakeStoreDto.class, id);
 
     ResponseEntity<FakeStoreProductDto> fakeStoreDtoResponseEntity = restTemplate.
                   getForEntity("http://fakestoreapi.com/products/{id}", FakeStoreProductDto.class, id);
@@ -39,6 +39,17 @@ public class FakeStoreProductService implements IProductService{
 
   @Override
   public Product addProduct(Product product) {
+    String url = "https://fakestoreapi.com/products";
+    FakeStoreProductDto fakeStoreProductDto = getDtoFromProduct(product);
+
+    ResponseEntity<FakeStoreProductDto> responseEntity = requestForEntity(HttpMethod.POST,
+                                                                                      url,
+                                                                                      fakeStoreProductDto,
+                                                                                      FakeStoreProductDto.class);
+
+    if (responseEntity.hasBody() && responseEntity.getStatusCode().equals(HttpStatusCode.valueOf(200)))
+      return getProductFromDto(responseEntity.getBody());
+
     return null;
   }
 
@@ -57,12 +68,38 @@ public class FakeStoreProductService implements IProductService{
 
   @Override
   public Boolean deleteProduct(long id) {
-    return false;
+    String url = "https://fakestoreapi.com/products/{id}";
+    ResponseEntity<FakeStoreProductDto> fakeStoreProductDtoResponseEntity = requestForEntity(HttpMethod.DELETE,
+                                                                                      url,
+                                                                                      null,
+                                                                                      FakeStoreProductDto.class, id);
+
+    return fakeStoreProductDtoResponseEntity.getStatusCode().equals(HttpStatusCode.valueOf(200)) ? true : false;
   }
 
   @Override
   public List<Product> getAllProducts() {
-    return List.of();
+    String url = "https://fakestoreapi.com/products";
+    ResponseEntity<FakeStoreProductDto[]> fakeStoreProductDtosResponseEntity = requestForEntity(HttpMethod.GET,
+                                                                                    url,
+                                                                                    null,
+                                                                                    FakeStoreProductDto[].class);
+
+    if (!fakeStoreProductDtosResponseEntity.hasBody() &&
+      fakeStoreProductDtosResponseEntity.getStatusCode().equals(HttpStatusCode.valueOf(400)))
+        return new ArrayList<>();
+
+    FakeStoreProductDto[] fakeStoreProductDtos = fakeStoreProductDtosResponseEntity.getBody();
+    List<Product> products = Arrays.stream(fakeStoreProductDtos)
+            .map(this::getProductFromDto)
+            .toList();
+
+    return products;
+  }
+
+  @Override
+  public Product getProductDetailsBasedOnUserRole(long productId, long userId) {
+    return null;
   }
 
   public <T> ResponseEntity<T> requestForEntity(HttpMethod httpMethod, String url, @Nullable Object request, Class<T> responseType, Object... uriVariables) throws RestClientException {

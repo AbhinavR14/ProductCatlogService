@@ -13,5 +13,6 @@ public class ProductDto {
   private String description;
   private long quantity;
   private String imageUrl;
+  private boolean isListed;
   private CategoryDto category;
 }

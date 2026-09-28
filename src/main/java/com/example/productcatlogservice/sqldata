@@ -1,0 +1,162 @@
+-- =========================
+-- CATEGORY DATA
+-- =========================
+
+INSERT INTO category (
+    id,
+    created_at,
+    last_updated_at,
+    status,
+    name,
+    description
+) VALUES
+(1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE', 'Electronics', 'Electronic gadgets and accessories'),
+(2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE', 'Books', 'Books across multiple genres'),
+(3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE', 'Fashion', 'Clothing and fashion accessories'),
+(4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE', 'Home & Kitchen', 'Household and kitchen products'),
+(5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE', 'Sports', 'Sports and fitness equipment');
+
+
+
+-- =========================
+-- PRODUCT DATA
+-- =========================
+
+INSERT INTO product (
+    id,
+    created_at,
+    last_updated_at,
+    status,
+    name,
+    price,
+    description,
+    quantity,
+    image_url,
+    is_prime_sale_specific,
+    category_id
+) VALUES
+
+-- Electronics
+(101, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'iPhone 15', 79999.00,
+ 'Latest Apple smartphone with A16 chip',
+ 50,
+ 'https://example.com/images/iphone15.jpg',
+ true,
+ 1),
+
+(102, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Samsung Galaxy S24', 74999.00,
+ 'Flagship Samsung Android smartphone',
+ 35,
+ 'https://example.com/images/galaxy-s24.jpg',
+ true,
+ 1),
+
+(103, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Sony WH-1000XM5', 29999.00,
+ 'Noise-cancelling wireless headphones',
+ 80,
+ 'https://example.com/images/sony-wh1000xm5.jpg',
+ false,
+ 1),
+
+-- Books
+(104, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Clean Code', 699.00,
+ 'A handbook of agile software craftsmanship',
+ 120,
+ 'https://example.com/images/clean-code.jpg',
+ false,
+ 2),
+
+(105, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Effective Java', 899.00,
+ 'Best practices for Java programming',
+ 90,
+ 'https://example.com/images/effective-java.jpg',
+ true,
+ 2),
+
+(106, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Design Patterns', 799.00,
+ 'Elements of reusable object-oriented software',
+ 75,
+ 'https://example.com/images/design-patterns.jpg',
+ false,
+ 2),
+
+-- Fashion
+(107, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Men''s Denim Jacket', 2499.00,
+ 'Classic blue denim jacket',
+ 60,
+ 'https://example.com/images/denim-jacket.jpg',
+ true,
+ 3),
+
+(108, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Women''s Running Shoes', 3499.00,
+ 'Lightweight and comfortable sports shoes',
+ 110,
+ 'https://example.com/images/running-shoes.jpg',
+ false,
+ 3),
+
+(109, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Leather Wallet', 999.00,
+ 'Premium genuine leather wallet',
+ 150,
+ 'https://example.com/images/wallet.jpg',
+ false,
+ 3),
+
+-- Home & Kitchen
+(110, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Air Fryer', 5999.00,
+ 'Healthy oil-free cooking appliance',
+ 45,
+ 'https://example.com/images/air-fryer.jpg',
+ true,
+ 4),
+
+(111, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Mixer Grinder', 3499.00,
+ '750W kitchen mixer grinder',
+ 70,
+ 'https://example.com/images/mixer-grinder.jpg',
+ false,
+ 4),
+
+(112, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Non-Stick Cookware Set', 4599.00,
+ '7-piece non-stick cookware set',
+ 55,
+ 'https://example.com/images/cookware.jpg',
+ true,
+ 4),
+
+-- Sports
+(113, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Yoga Mat', 899.00,
+ 'Anti-slip fitness yoga mat',
+ 200,
+ 'https://example.com/images/yoga-mat.jpg',
+ false,
+ 5),
+
+(114, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Cricket Bat', 2499.00,
+ 'Professional English willow cricket bat',
+ 40,
+ 'https://example.com/images/cricket-bat.jpg',
+ true,
+ 5),
+
+(115, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE',
+ 'Dumbbell Set', 3999.00,
+ 'Adjustable home workout dumbbells',
+ 65,
+ 'https://example.com/images/dumbbells.jpg',
+ false,
+ 5);
